@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.lulu"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
