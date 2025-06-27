@@ -1,0 +1,46 @@
+# PlaceholderAPI Mock Plugin Configuration
+# Define mock placeholder values here
+# Format: identifier_placeholder_name: mock_value
+# Example: cwgame_player_x: "100" creates %cwgame_player_x% placeholder
+
+# Dynamic pattern support:
+# - <variable_name>: Can be any name like <player>, <uuid>, <number>, etc.
+# - Use {variable_name} in value to reference extracted values
+
+# Enable debug mode (shows all loaded placeholders in console)
+debug: true
+
+# Mock placeholder values configuration
+mock_placeholders:
+  # === CWGame Plugin Examples ===
+  # Static values
+  cwgame_player_level: "50"
+  cwgame_player_coins: "1000"
+  
+  # Simple dynamic values
+  cwgame_player_x_<player>: "Player {player} X coordinate: 100"
+  cwgame_player_y_<player>: "Player {player} Y coordinate: 200"
+  
+  # Complex dynamic values (multiple placeholders)
+  cwgame_hello_<player>_123_<uuid>: "Hello {player}, your UUID is {uuid}"
+  cwgame_data_<player>_<type>_<value>: "Player {player} {type} data: {value}"
+  
+  # === Vault Economy Plugin Examples ===
+  vault_eco_balance: "9999999.99"
+  vault_eco_balance_<player>: "Player {player} balance: 50000"
+  vault_eco_top_<rank>: "Leaderboard rank {rank}: Rich Player"
+  
+  # === PlaceholderAPI Native Examples ===
+  player_name: "{current_player}"
+  player_health: "20.0"
+  player_gamemode_<player>: "Player {player} gamemode: Creative"
+  
+  # === Server Related Examples ===
+  server_online: "15"
+  server_world_<world>: "World {world} player count: 10"
+  
+  # === Test Examples ===
+  test_static: "This is a static test value"
+  test_simple_<name>: "Simple test: {name}"
+  test_complex_<a>_<b>_<c>: "Complex test: {a}-{b}-{c}"
+  test_mixed_123_<player>_end: "Mixed test: player {player} end" 

@@ -1,0 +1,18 @@
+name: PlaceholderAPIMock
+version: ${version}
+main: me.lulu.placeholdermock.PlaceholderMockPlugin
+api-version: 1.21
+depend: [ PlaceholderAPI ]
+author: Lulu
+description: A plugin to mock PlaceholderAPI values through configuration
+
+commands:
+  papimock:
+    description: PlaceholderAPI Mock commands
+    usage: /papimock <reload>
+    permission: placeholdermock.admin
+
+permissions:
+  placeholdermock.admin:
+    description: Admin permission for PlaceholderAPI Mock
+    default: op 
