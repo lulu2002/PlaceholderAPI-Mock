@@ -13,7 +13,7 @@ public class PlaceholderMockPlugin extends JavaPlugin {
 
         MockPlaceholdersCache cache = new MockPlaceholdersCache();
         CreateExpansion createExpansion = new CreateExpansion(this);
-        this.loader = new MockPlaceholderLoader(createExpansion, cache, getConfig(), getLogger());
+        this.loader = new MockPlaceholderLoader(createExpansion, cache, this::getConfig, getLogger());
         PlaceholderMockCommand command = new PlaceholderMockCommand(this::reloadConfig, this.loader, cache, getLogger());
 
         getCommand("papimock").setExecutor(command);

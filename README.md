@@ -85,15 +85,47 @@ mock_placeholders:
   stats_top_<rank>_<category>: "Rank {rank} in {category}: PlayerName"
 ```
 
+#### Escaped Placeholders (Literal Angle Brackets)
+```yaml
+mock_placeholders:
+  # Placeholder names that contain literal < > characters
+  cwduration_general_\<cwgame_game_time\>: "15:30"
+  plugin_data_\<special_format\>: "Special data format"
+  
+  # Mixed escaped and dynamic
+  test_\<prefix\>_<player>_suffix: "Prefix <prefix> for player {player}"
+```
+
 ### Variable Types
 
-You can use any variable name in angle brackets `<variable_name>`:
-- `<player>` - Player name
-- `<uuid>` - Player UUID  
-- `<world>` - World name
-- `<rank>`, `<number>`, `<type>` - Any custom identifier
+You can use any variable name in angle brackets 
 
 Use `{variable_name}` in the value to reference the extracted variable.
+
+### Escaping Angle Brackets
+
+If you need to include literal `<` and `>` characters in your placeholder names (not as variable markers), you can escape them with backslashes:
+
+```yaml
+mock_placeholders:
+  # These placeholders contain literal < > characters in their names
+  cwduration_general_\<cwgame_countdown_next_match_state\>: "15:30"
+  cwduration_general_\<cwgame_countdown_next_mine_round\>: "01:20"
+  
+  # Mixed: literal and dynamic variables
+  test_mixed_\<literal\>_<dynamic>: "Literal <literal> text and dynamic {dynamic}"
+```
+
+In this example:
+- `%cwduration_general_<cwgame_countdown_next_match_state>%` will return "15:30"
+- `%cwduration_general_<cwgame_countdown_next_mine_round>%` will return "01:20"  
+- `%test_mixed_<literal>_something%` will return "Literal <literal> text and dynamic something"
+
+**Key Points:**
+- Use `\<` and `\>` to escape angle brackets
+- Escaped brackets are treated as literal characters, not variable markers
+- You can mix escaped and unescaped brackets in the same placeholder
+- The escaping only affects the placeholder name parsing, not the returned values
 
 ## Commands
 

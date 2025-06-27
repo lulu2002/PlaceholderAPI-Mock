@@ -13,17 +13,24 @@ public class MockValue {
     private final String value;
     private final Pattern compiledPattern;
     private final boolean isDynamic;
+    private final String processedPattern;
 
     public MockValue(String pattern, String value) {
         this.pattern = pattern;
         this.value = value;
-        this.isDynamic = pattern.contains("<") && pattern.contains(">");
-
+        
+        String tempPattern = pattern.replace("\\<", "___ESCAPED_LT___").replace("\\>", "___ESCAPED_GT___");
+        
+        this.isDynamic = tempPattern.contains("<") && tempPattern.contains(">");
+        
         if (isDynamic) {
-            String regexPattern = pattern.replaceAll("<[^>]+>", "(.+)");
+            String regexPattern = tempPattern.replaceAll("<[^>]+>", "(.+)");
+            regexPattern = regexPattern.replace("___ESCAPED_LT___", "<").replace("___ESCAPED_GT___", ">");
             this.compiledPattern = Pattern.compile("^" + regexPattern + "$");
+            this.processedPattern = pattern.replace("\\<", "<").replace("\\>", ">");
         } else {
             this.compiledPattern = null;
+            this.processedPattern = pattern.replace("\\<", "<").replace("\\>", ">");
         }
     }
 
@@ -32,7 +39,7 @@ public class MockValue {
      */
     public boolean matches(String placeholder) {
         if (!isDynamic) {
-            return pattern.equals(placeholder);
+            return processedPattern.equals(placeholder);
         } else {
             return compiledPattern.matcher(placeholder).matches();
         }
@@ -55,6 +62,8 @@ public class MockValue {
             }
         }
 
+        processedValue = processedValue.replace("\\<", "<").replace("\\>", ">");
+
         return processedValue;
     }
 
@@ -64,8 +73,9 @@ public class MockValue {
     private Map<String, String> extractValues(Matcher matcher) {
         Map<String, String> extractedValues = new HashMap<>();
 
+        String tempPattern = pattern.replace("\\<", "___ESCAPED_LT___").replace("\\>", "___ESCAPED_GT___");
         Pattern variablePattern = Pattern.compile("<([^>]+)>");
-        Matcher variableMatcher = variablePattern.matcher(pattern);
+        Matcher variableMatcher = variablePattern.matcher(tempPattern);
 
         int groupIndex = 1;
         while (variableMatcher.find() && groupIndex <= matcher.groupCount()) {
@@ -90,10 +100,15 @@ public class MockValue {
         return isDynamic;
     }
 
+    public String getProcessedPattern() {
+        return processedPattern;
+    }
+
     @Override
     public String toString() {
         return "MockValue{" +
                 "pattern='" + pattern + '\'' +
+                ", processedPattern='" + processedPattern + '\'' +
                 ", value='" + value + '\'' +
                 ", isDynamic=" + isDynamic +
                 '}';

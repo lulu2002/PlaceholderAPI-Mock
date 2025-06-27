@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -15,19 +16,19 @@ public class MockPlaceholderLoader {
 
     private final CreateExpansion createExpansion;
     private final MockPlaceholdersCache cache;
-    private final FileConfiguration config;
+    private final Supplier<FileConfiguration> configSupplier;
     private final Logger logger;
 
-    public MockPlaceholderLoader(CreateExpansion createExpansion, MockPlaceholdersCache cache, FileConfiguration fileConfiguration, Logger logger) {
+    public MockPlaceholderLoader(CreateExpansion createExpansion, MockPlaceholdersCache cache, Supplier<FileConfiguration> fileConfiguration, Logger logger) {
         this.createExpansion = createExpansion;
         this.cache = cache;
-        this.config = fileConfiguration;
+        this.configSupplier = fileConfiguration;
         this.logger = logger;
     }
 
     public void loadAndRegisterExpansions() {
         try {
-            ConfigurationSection mockSection = this.config.getConfigurationSection("mock_placeholders");
+            ConfigurationSection mockSection = this.configSupplier.get().getConfigurationSection("mock_placeholders");
             if (mockSection == null) {
                 this.logger.warning("'mock_placeholders' section not found in configuration!");
                 return;
@@ -50,11 +51,11 @@ public class MockPlaceholderLoader {
                     this.cache.addExpansion(expansion);
                     this.logger.info("Successfully registered expansion '" + identifier + "' with " + expansion.getMockValuesCount() + " placeholders.");
 
-                    if (this.config.getBoolean("debug", false)) {
+                    if (this.configSupplier.get().getBoolean("debug", false)) {
                         this.logger.info("  Expansion '" + identifier + "' placeholders:");
                         List<MockValue> mockValueList = expansion.getMockValues();
                         for (MockValue mockValue : mockValueList) {
-                            String displayPattern = mockValue.getPattern();
+                            String displayPattern = mockValue.getProcessedPattern();
                             if (mockValue.isDynamic()) {
                                 displayPattern += " (dynamic)";
                             }
